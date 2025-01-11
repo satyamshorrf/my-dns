@@ -4,8 +4,14 @@ const dnsPacket = require('dns-packet');
 const server = dgram.createSocket('udp4');
 
 const db = {
-    'satyamshorrf.dev': '127.0.0.1',
-    'www.satyamshorrf.dev': '127.0.0.1',
+    'satyamshorrf.dev': {
+        type: 'A',
+        data: '127.0.0.1',
+    },
+    'www.satyamshorrf.dev': {
+        type: 'CNAME',
+        data: 'hashnode.network',
+    },
 }
 
 server.on('message', (msg, rinfo) => {
@@ -17,10 +23,10 @@ server.on('message', (msg, rinfo) => {
         id: incomingReq.id,
         flags: dnsPacket.AUTHORITATIVE_ANSWER,
         answers: [{
-            type: 'A',
+            type: 'ipFromDb.type',
             class: 'IN',
             name: incomingReq.questions[0].name,
-            data: ipFromDb,
+            data: ipFromDb.data,
         }]
     });
 
